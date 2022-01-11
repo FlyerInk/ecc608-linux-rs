@@ -146,8 +146,16 @@ impl Ecc {
             .map(|_| ())
     }
 
-    fn send_wake(&mut self) {
-        let _ = self.send_buf(&[0]);
+    fn send_wake(&mut self) {        
+        self.i2c.smbus_set_slave_address(0x00, flase)?;
+        let write_msg = i2c_linux::Message::Write {
+            address: 0x00,
+            data: 0x00,
+            flags: Default::default(),
+        };
+        self.i2c.i2c_transfer(&mut [write_msg])?;
+        self.i2c.smbus_set_slave_address(Self.address, flase)?;
+        // let _ = self.send_buf(&[0]);
     }
 
     fn send_sleep(&mut self) {
